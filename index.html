@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ねこレース</title>
+    <style>
+      /* ブラウザの窓いっぱいにゲームを出す。
+         以前の既定のページは 960×600 の枠を真ん中に置くだけで、窓の高さが 600 より低いと
+         上下がはみ出し、画面の端の表示（時計・ミラー・ゲージ）が見えなくなっていた */
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #1B2238; }
+      #game { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; }
+      #unity-canvas { display: block; width: 100%; height: 100%; background: #1B2238; outline: none; }
+      #loading { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(320px, 60vw); text-align: center;
+        color: #F4F6FA; font: 600 15px/1.6 "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; letter-spacing: 0.08em; }
+      #bar { height: 6px; margin-top: 12px; background: rgba(244, 246, 250, 0.15); }
+      #fill { height: 100%; width: 0; background: #F2A541; }
+      #note { position: absolute; left: 0; right: 0; bottom: 16px; text-align: center; color: #F4F6FA; font: 13px sans-serif; display: none; }
+    </style>
+  </head>
+  <body>
+    <div id="game">
+      <canvas id="unity-canvas" tabindex="-1"></canvas>
+      <div id="loading">ねこが坂の上で待っています<div id="bar"><div id="fill"></div></div></div>
+      <div id="note"></div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+      function showBanner(msg, type) {
+        var n = document.querySelector("#note");
+        n.textContent = msg; n.style.display = "block";
+        if (type != "error") setTimeout(function () { n.style.display = "none"; }, 5000);
+      }
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/webgl-night.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/webgl-night.data.unityweb",
+        frameworkUrl: buildUrl + "/webgl-night.framework.js.unityweb",
+        codeUrl: buildUrl + "/webgl-night.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "maosun-dev",
+        productName: "ねこレース",
+        productVersion: "0.1.0",
+        showBanner: showBanner,
+        // 大きな窓でも重くなりすぎないよう、描く細かさは画素比 1.5 まで
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 1.5),
+      };
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = function () {
+        createUnityInstance(canvas, config, function (p) {
+          document.querySelector("#fill").style.width = (100 * p) + "%";
+        }).then(function () {
+          document.querySelector("#loading").style.display = "none";
+          canvas.focus();
+        }).catch(function (message) { showBanner(message, "error"); });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
