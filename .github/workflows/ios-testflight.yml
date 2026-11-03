@@ -62,7 +62,7 @@ jobs:
 
       # Unity が書く Info.plist は CFBundleVersion が PlayerSettings の Build（0）のままなので、
       # 実行の番号で毎回ちがう版番号にする（同じコミットで再実行しても「使用済み」で弾かれない）。
-      # あわせて「暗号化は標準のものだけ」と書き、TestFlight で輸出コンプライアンスの質問が出ないようにする
+      # あわせて「暗号化は標準のものだけ」と書き、TestFlight で輸出コンプライアンスの質問が出ないようにする。言語も日本語にする
       - name: 版番号と輸出コンプライアンスを書き込む
         run: |
           PLIST=build/iOS/iOS/Info.plist
@@ -70,6 +70,12 @@ jobs:
             /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string ${{ github.run_number }}" "$PLIST"
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST" || \
             /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST"
+          # 日本語だけのアプリなので、App Store の「言語」欄が EN にならないよう日本語にする
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion ja" "$PLIST" || \
+            /usr/libexec/PlistBuddy -c "Add :CFBundleDevelopmentRegion string ja" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Delete :CFBundleLocalizations" "$PLIST" || true
+          /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations array" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :CFBundleLocalizations:0 string ja" "$PLIST"
           /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST"
 
       # ここでは署名しない（署名すると開発用の証明書が要り、それには iPhone の登録が要る）。
