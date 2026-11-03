@@ -6,8 +6,8 @@
   },
   "outcome": "success",
   "exitCode": 0,
-  "startedAt": "2026-11-03T09:41:21.430Z",
-  "endedAt": "2026-11-03T09:48:10.813Z",
+  "startedAt": "2026-11-03T10:34:09.583Z",
+  "endedAt": "2026-11-03T10:49:36.494Z",
   "editor": {
     "version": "6000.6.6f1",
     "changeset": "d20c9ac777da",
@@ -16,11 +16,11 @@
   "build": {
     "target": "WebGL",
     "executeMethod": "NekoRace.EditorTools.WebGLDevBuild.Build",
-    "logFile": "Logs/build-WebGL-1793698881078.log"
+    "logFile": "Logs/build-WebGL-1793702048114.log"
   },
   "source": {
     "vcs": "git",
-    "revision": "91d2ca1ab6b6950cc1386bc1e36ce0e5eebd90aa",
+    "revision": "a02830485d08eadc6b268e8a8f0031ff62245421",
     "dirty": true
   },
   "packages": {
